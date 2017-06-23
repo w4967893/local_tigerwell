@@ -55,7 +55,11 @@ $route['translate_uri_dashes'] = FALSE;
 $route['auth/login'] = 'LoginController/login';//登录
 $route['auth/logout'] = 'LoginController/logout';//退出登录
 $route['auth/register'] = 'RegisteredController/register';//注册
+
 $route['customer/apply'] = 'ApplyController/apply';//申请试用
-$route['customer/buy'] = 'OrderController/buy';//购买生成订单
+
 $route['goods/list'] = 'GoodsController/gList';//获取商品列表
+
+$route['order/list'] = 'OrderController/oList';//获取订单列表
+$route['order/buy'] = 'OrderController/buy';//购买生成订单
 

@@ -70,4 +70,15 @@ class OrderController extends MY_Controller {
         $number = date("Ymd", time()).rand(10000,99999);
         return $number;
     }
+
+    //订单列表
+    public function oList()
+    {
+        $orderArr = $this->OrderModel->oList();
+        if (!$orderArr) {
+            echo $this->requestReturn('购买失败', false);exit;
+        } else {
+            echo $this->requestReturn('购买成功', true, $orderArr);exit;
+        }
+    }
 }
