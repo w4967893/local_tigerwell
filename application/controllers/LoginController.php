@@ -30,17 +30,17 @@ class LoginController extends CI_Controller {
         $username = $this->input->get('username');
         $password = $this->input->get('password');
         if (!$username || !$password) {
-            echo $this->requestReturn('用户名,密码不能为空', false);
+            echo $this->requestReturn('用户名,密码不能为空', false);exit;
         }
         $password = crypt($password, 'tigerwell');
         $userWhere = ['username' => $username, 'password' => $password];
         $userArr = $this->userModel->getOne($userWhere);
         if (!$userArr) {
-            echo $this->requestReturn('用户密码不正确', false);
+            echo $this->requestReturn('用户密码不正确', false);exit;
         }
         //存入session
         $this->session->set_userdata($userArr);
-        echo $this->requestReturn('登录成功', true);
+        echo $this->requestReturn('登录成功', true);exit;
     }
 
     //退出登录
