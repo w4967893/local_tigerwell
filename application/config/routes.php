@@ -52,8 +52,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'Welcome';
 $route['404_override'] = '';//404页面
 $route['translate_uri_dashes'] = FALSE;
-$route['auth/login'] = 'LoginController/login';
-$route['auth/logout'] = 'LoginController/logout';
-$route['auth/register'] = 'RegisteredController/register';
-$route['customer/apply'] = 'ApplyController/apply';
+$route['auth/login'] = 'LoginController/login';//登录
+$route['auth/logout'] = 'LoginController/logout';//退出登录
+$route['auth/register'] = 'RegisteredController/register';//注册
+$route['customer/apply'] = 'ApplyController/apply';//申请试用
+$route['customer/buy'] = 'OrderController/buy';//购买生成订单
+$route['goods/list'] = 'GoodsController/gList';//获取商品列表
 

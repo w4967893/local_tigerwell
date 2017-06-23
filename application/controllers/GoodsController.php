@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class MY_Controller extends CI_Controller {
+class GoodsController extends CI_Controller {
 
     /**
      * Index Page for this controller.
@@ -21,17 +21,17 @@ class MY_Controller extends CI_Controller {
     public function __construct(){
         parent::__construct();
         $this->load->library("session");//加载session
-        $this->load->helper('url');
-        $this->isLogin();
+        $this->load->model('GoodsModel');
     }
 
-    //是否登录
-    public function isLogin()
+    //商品列表
+    public function gList()
     {
-        if (!$this->session->userdata('id')) {
-            //没有登录,重定向
-//            redirect('http://local.tigerwill.com/auth/login', 'refresh');
-            echo $this->requestReturn('请登录', false);exit;
+        $goodsArr = $this->GoodsModel->gList(['status' => 1]);
+        if ($goodsArr) {
+            echo $this->requestReturn('获取数据成功', true, $goodsArr);
+        } else {
+            echo $this->requestReturn('暂无商品', false);
         }
     }
 }
