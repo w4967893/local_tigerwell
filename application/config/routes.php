@@ -52,14 +52,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'Welcome';
 $route['404_override'] = '';//404页面
 $route['translate_uri_dashes'] = FALSE;
-$route['auth/login'] = 'LoginController/login';//登录
-$route['auth/logout'] = 'LoginController/logout';//退出登录
-$route['auth/register'] = 'RegisteredController/register';//注册
+$route['auth/login'] = 'Home/LoginController/login';//登录
+$route['auth/logout'] = 'Home/LoginController/logout';//退出登录
+$route['auth/register'] = 'Home/RegisteredController/register';//注册
 
-$route['customer/apply'] = 'ApplyController/apply';//申请试用
+$route['customer/apply'] = 'Home/ApplyController/apply';//申请试用
+$route['customer/userChange'] = 'Home/ChangeMoneyController/userChange';//获取用户资金变动记录
+$route['goods/list'] = 'Home/GoodsController/gList';//获取商品列表
+$route['order/buy'] = 'Home/OrderController/buy';//购买生成订单
 
-$route['goods/list'] = 'GoodsController/gList';//获取商品列表
+//后端api
+$route['admin/login'] = 'admin/LoginController/index';//登录
 
-$route['order/list'] = 'OrderController/oList';//获取订单列表
-$route['order/buy'] = 'OrderController/buy';//购买生成订单
+$route['admin/auth/login'] = 'admin/LoginController/login';//登录
+$route['admin/auth/logout'] = 'admin/LoginController/logout';//退出登录
+
+$route['admin/order/list'] = 'admin/OrderController/oList';//获取订单列表
+
+$route['admin/customer/info'] = 'admin/CustomerController/info';//获取订单列表
+
 

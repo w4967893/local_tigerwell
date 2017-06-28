@@ -16,4 +16,17 @@ class UserModel extends CI_Model {
         return $query;
     }
 
+    //获取客户相关信息
+    public function info($limit = 20, $offset = 0)
+    {
+        $this->db->select('');
+        $this->db->from('user');
+        $this->db->join('order', 'order.user_id = user.id', 'left');
+        $this->db->where(['status' => 1]);
+        $this->db->order_by('user.create_time', 'DESC');
+        $this->db->limit($limit, $offset);
+        $userArr = $this->db->get()->result_array();
+        return $userArr;
+    }
+
 }

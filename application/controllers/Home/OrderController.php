@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class OrderController extends MY_Controller {
+class OrderController extends HomeBase {
 
     /**
      * Index Page for this controller.
@@ -69,16 +69,5 @@ class OrderController extends MY_Controller {
         ini_set('date.timezone','PRC');
         $number = date("Ymd", time()).rand(10000,99999);
         return $number;
-    }
-
-    //订单列表
-    public function oList()
-    {
-        $orderArr = $this->OrderModel->oList();
-        if (!$orderArr) {
-            echo $this->requestReturn('购买失败', false);exit;
-        } else {
-            echo $this->requestReturn('购买成功', true, $orderArr);exit;
-        }
     }
 }

@@ -20,6 +20,33 @@ class MY_Controller extends CI_Controller {
      */
     public function __construct(){
         parent::__construct();
+    }
+}
+
+class AdminBase extends MY_Controller
+{
+    public function __construct(){
+        parent::__construct();
+        $this->load->library("session");//加载session
+        $this->load->helper('url');
+        $this->isLogin();
+    }
+
+    //是否登录
+    public function isLogin()
+    {
+        if (!$this->session->userdata('admin')) {
+            //没有登录,重定向
+//            redirect('http://local.tigerwill.com/auth/login', 'refresh');
+            echo $this->requestReturn('请登录', false);exit;
+        }
+    }
+}
+
+class HomeBase extends MY_Controller
+{
+    public function __construct(){
+        parent::__construct();
         $this->load->library("session");//加载session
         $this->load->helper('url');
         $this->isLogin();
