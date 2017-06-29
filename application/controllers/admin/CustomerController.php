@@ -27,16 +27,20 @@ class CustomerController extends AdminBase {
     public function info()
     {
         $userArr = $this->UserModel->info();
-        if ($userArr) {
-            echo $this->requestReturn('获取数据成功', true, $userArr);
-        } else {
-            echo $this->requestReturn('暂无数据', false);
-        }
+        $this->load->view('CustomerView', ['data' => $userArr]);
     }
 
     //重置密码
-    public function returnPassword()
+    public function resetPassword()
     {
-
+        $id = $this->input->post('id');
+        $password = $this->input->post('password');
+        $password = crypt($password, 'tigerwell');
+        $bool = $this->UserModel->update(['id' => $id], ['password' => $password]);
+        if ($bool) {
+            echo $this->requestReturn('重置成功', true);exit;
+        } else {
+            echo $this->requestReturn('重置失败', false);exit;
+        }
     }
 }

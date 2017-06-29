@@ -69,6 +69,7 @@ $route['admin/auth/logout'] = 'admin/LoginController/logout';//退出登录
 
 $route['admin/order/list'] = 'admin/OrderController/oList';//获取订单列表
 
-$route['admin/customer/info'] = 'admin/CustomerController/info';//获取订单列表
+$route['admin/customer/info'] = 'admin/CustomerController/info';//获取客户列表
+$route['admin/customer/resetPassword'] = 'admin/CustomerController/resetPassword';//重置密码
 
 

@@ -27,10 +27,6 @@ class OrderController extends AdminBase {
     public function oList()
     {
         $orderArr = $this->OrderModel->oList();
-        if (!$orderArr) {
-            echo $this->requestReturn('获取列表失败', false);exit;
-        } else {
-            echo $this->requestReturn('获取列表成功', true, $orderArr);exit;
-        }
+        $this->load->view('OrderView', ['data' => $orderArr]);
     }
 }

@@ -22,20 +22,20 @@ class LoginController extends CI_Controller {
         parent::__construct();
         $this->load->library("session");//加载session
         $this->load->model('AdminUserModel');
+        $this->load->helper('url');
     }
 
     //登录页面
     public function index()
     {
-        $this->load->view('loginview');
+        $this->load->view('LoginView');
     }
 
     //用户登录
     public function login()
     {
-        $username = $this->input->get('username');
-        $password = $this->input->get('password');
-
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
         if (!$username || !$password) {
             echo $this->requestReturn('用户名,密码不能为空', false);exit;
         }
@@ -48,13 +48,14 @@ class LoginController extends CI_Controller {
         //存入session
         $this->session->set_userdata(['admin' => $userArr]);
         $this->session->userdata('admin');
-        echo $this->requestReturn('登录成功', true);exit;
+        redirect('admin/order/list');
+//        echo $this->requestReturn('登录成功', true);exit;
     }
 
     //退出登录
     public function logout()
     {
         $this->session->unset_userdata('admin');
-        echo $this->requestReturn('退出登录成功', true);
+        redirect('admin/login');
     }
 }

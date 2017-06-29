@@ -52,7 +52,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN LOGIN -->
 <div class="content">
     <!-- BEGIN LOGIN FORM -->
-    <form class="login-form" action="index.html" method="post">
+    <form class="login-form" action="<?php echo site_url('admin/auth/login'); ?>" method="post">
         <h3 class="form-title">登录</h3>
         <div class="form-group">
             <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
@@ -67,9 +67,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <button type="submit" class="btn btn-success uppercase">登录</button>
         </div>
         <div class="create-account">
-            <p>
-
-            </p>
+            <p></p>
         </div>
     </form>
     <!-- END LOGIN FORM -->

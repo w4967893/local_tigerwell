@@ -19,14 +19,20 @@ class UserModel extends CI_Model {
     //获取客户相关信息
     public function info($limit = 20, $offset = 0)
     {
-        $this->db->select('');
+        $this->db->select('user.*, goods.goods_name');
         $this->db->from('user');
         $this->db->join('order', 'order.user_id = user.id', 'left');
-        $this->db->where(['status' => 1]);
+        $this->db->join('goods', 'order.goods_id = goods.id', 'left');
         $this->db->order_by('user.create_time', 'DESC');
         $this->db->limit($limit, $offset);
         $userArr = $this->db->get()->result_array();
         return $userArr;
     }
 
+    //修改用户信息
+    public function update($where, $data)
+    {
+//        $this->db->replace('user', $data);
+        return $this->db->update('user', $data, $where);
+    }
 }
