@@ -32,4 +32,15 @@ class OrderModel extends CI_Model {
         $orderArr = $this->db->get()->result_array();
         return $orderArr;
     }
+
+    //根据where条件获取一条数据
+    public function getOne($where)
+    {
+        $this->db->select('goods.goods_name, goods.version');
+        $this->db->from('order');
+        $this->db->join('goods', 'order.goods_id = goods.id', 'left');
+        $this->db->where($where);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
 }

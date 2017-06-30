@@ -12,6 +12,7 @@ class UserModel extends CI_Model {
     //根据where条件获取一条数据
     public function getOne($where)
     {
+        $this->db->select('id, username, balance, phone');
         $query = $this->db->get_where('user', $where)->row_array();
         return $query;
     }

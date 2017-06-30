@@ -22,6 +22,7 @@ class LoginController extends CI_Controller {
         parent::__construct();
         $this->load->library("session");//加载session
         $this->load->model('userModel');
+        $this->load->model('orderModel');
     }
 
     //用户登录
@@ -38,9 +39,13 @@ class LoginController extends CI_Controller {
         if (!$userArr) {
             echo $this->requestReturn('用户密码不正确', false);exit;
         }
+        //获取用户订购商品
+        $orderArr  = $this->orderModel->getOne(['order.user_id' => $userArr['id'], 'order.status' => 1]);
+        $userArr['goods_name'] = $orderArr['goods_name'];
+        $userArr['version'] = $orderArr['version'];
         //存入session
         $this->session->set_userdata($userArr);
-        echo $this->requestReturn('登录成功', true);exit;
+        echo $this->requestReturn('登录成功', true, $userArr);exit;
     }
 
     //退出登录
