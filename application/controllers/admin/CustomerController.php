@@ -23,14 +23,24 @@ class CustomerController extends AdminBase {
         $this->load->model('UserModel');
     }
 
-    //获取客户的相关信息
+    /**
+     * 获取客户的相关信息
+     *
+     * @return json
+     */
     public function info()
     {
         $userArr = $this->UserModel->info();
         $this->load->view('CustomerView', ['data' => $userArr]);
     }
 
-    //重置密码
+    /**
+     * 重置密码
+     *
+     * @param int id 客户id
+     * @param string password 密码
+     * @return json
+     */
     public function resetPassword()
     {
         $id = $this->input->post('id');

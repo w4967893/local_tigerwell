@@ -31,7 +31,13 @@ class LoginController extends CI_Controller {
         $this->load->view('LoginView');
     }
 
-    //用户登录
+    /**
+     * 登录
+     *
+     * @param string username 用户名
+     * @param string password 密码
+     * @return json
+     */
     public function login()
     {
         $username = $this->input->post('username');
@@ -52,7 +58,10 @@ class LoginController extends CI_Controller {
 //        echo $this->requestReturn('登录成功', true);exit;
     }
 
-    //退出登录
+    /**
+     * 退出登录
+     *
+     */
     public function logout()
     {
         $this->session->unset_userdata('admin');

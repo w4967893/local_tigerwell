@@ -23,7 +23,11 @@ class OrderController extends AdminBase {
         $this->load->model('OrderModel');
     }
 
-    //订单列表
+    /**
+     * 订单列表
+     *
+     * @return json
+     */
     public function oList()
     {
         $orderArr = $this->OrderModel->oList();
