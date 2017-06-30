@@ -61,6 +61,8 @@ $route['customer/userChange'] = 'Home/ChangeMoneyController/userChange';//获取
 $route['goods/list'] = 'Home/GoodsController/gList';//获取商品列表
 $route['order/buy'] = 'Home/OrderController/buy';//购买生成订单
 
+$route['alipay/index'] = 'Home/PayController/alipay';//支付宝
+
 //后端api
 $route['admin/login'] = 'admin/LoginController/index';//登录
 
