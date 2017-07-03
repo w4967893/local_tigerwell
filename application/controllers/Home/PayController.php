@@ -20,22 +20,29 @@ class PayController extends HomeBase {
      */
     public function __construct(){
         parent::__construct();
-        $this->load->model('OrderModel');
+        $this->load->model('PayModel');
+        $this->load->model('ChangeMoneyModel');
+        $this->load->model('UserModel');
     }
 
     //支付宝支付接口
     public function alipay()
     {
-        $out_trade_no = $this->input->post('out_trade_no');//商户订单号，商户网站订单系统中唯一订单号，必填
-        $subject = $this->input->post('subject');//订单名称，必填
-        $currency = $this->input->post('currency');//付款外币币种，必填
-        $total_fee = $this->input->post('total_fee');//付款外币金额，必填
-        $body = $this->input->post('body');//商品描述，可空
+        $total_fee = $this->input->get('total_fee');//付款外币金额，必填
+        $body = $this->input->get('body');//商品描述，可空
+
+        $out_trade_no = $this->alipayNo();//商户订单号，商户网站订单系统中唯一订单号，必填
+        $currency = 'USD';//付款外币币种，必填
+        $subject = 'Tigerwell商城充值';//订单名称，必填
+
+        //存入充值表
+        $userId = $this->session->userdata('id');
+        $insert = ['user_id' => $userId, 'out_trade_no' => $out_trade_no, 'total_fee' => $total_fee, 'currency' => $currency];
+        $this->PayModel->insertOne($insert);
 
         $this->load->library('alipay/AlipayConfig', '', 'alipayConfig');
         $alipay_config = $this->alipayConfig->config();
         $this->load->library('alipay/lib/AlipaySubmit', $alipay_config, 'alipaySubmit');
-
         //构造要请求的参数数组，无需改动
         $parameter = array(
             "service"       => $alipay_config['service'],
@@ -55,5 +62,82 @@ class PayController extends HomeBase {
         );
         $html_text = $this->alipaySubmit->buildRequestForm($parameter,"get", "确认");
         echo $html_text;
+    }
+
+    //同步回调
+    public function synchronous()
+    {
+        $tradeStatus = $this->input->get('trade_status');//交易状态 TRADE_CLOSED/TRADE_FINISHED
+        $tradeNo = $this->input->get('trade_no');//支付宝交易号
+        $outTradeNo = $this->input->get('out_trade_no');//境外商户交易号
+        $currency = $this->input->get('currency');//结算币种
+        $totalFee = $this->input->get('total_fee');//商品的外币金额
+
+        $notifyTime = $this->input->get('notify_time');//返回充值时间（系统时间)
+        $update = ['trade_status' => $tradeStatus, 'trade_no' => $tradeNo, 'currency' => $currency, 'total_fee' => $totalFee, 'notify_time' => $notifyTime];
+        $where = ['out_trade_no' => $outTradeNo];
+        //更新充值表
+        $bool = $this->PayModel->update($update, $where);
+        if ($bool) {
+            $this->changeBalance($outTradeNo, $totalFee);
+        }
+        if ($tradeStatus == 'TRADE_FINISHED') {
+            echo '支付成功';
+        } else {
+            echo '支付失败';
+        }
+    }
+
+    //异步回调 25小时以内完成8次通知（通知的间隔频率一般是：4m,10m,10m,1h,2h,6h,15h)
+    public function asynchronous()
+    {
+        $notifyType = $this->input->post('notify_type');//通知类型
+        $notifyId = $this->input->post('notify_id');//支付宝通知流水号，境外商户可以用这个流水号询问支付宝该条通知的合法性
+        $notifyTime = $this->input->post('notify_time');//通知时间（支付宝时间）
+
+        $tradeStatus = $this->input->post('trade_status');//交易状态
+        $tradeNo = $this->input->post('trade_no');//支付宝交易号
+        $outTradeNo = $this->input->post('out_trade_no');//境外商户交易号
+        $currency = $this->input->post('currency');//结算币种
+        $totalFee = $this->input->post('total_fee');//商品的外币金额
+
+        $update = ['notify_type' => $notifyType, 'notify_id' => $notifyId, 'trade_status' => $tradeStatus, 'trade_no' => $tradeNo, 'currency' => $currency, 'total_fee' => $totalFee, 'notify_time' => $notifyTime];
+        $where = ['out_trade_no' => $outTradeNo];
+        //更新充值表
+        $bool = $this->PayModel->update($update, $where);
+        if ($bool) {
+            $change = $this->changeBalance($outTradeNo, $totalFee);
+            if ($change) {
+                echo 'success';
+            } else {
+                echo 'false';
+            }
+        }
+    }
+
+    //改变余额
+    public function changeBalance($outTradeNo, $totalFee)
+    {
+        //查询user_id
+        $PayObj = $this->PayModel->getOne(['out_trade_no' => $outTradeNo]);
+        //查询原余额
+        $UserObj = $this->UserModel->getOne(['id' => $PayObj['user_id']]);
+        $changeBalance = $UserObj['balance'] + $totalFee;
+        //修改用户余额
+        $bool = $this->UserModel->update(['id' => $PayObj['user_id']], ['balance' => $changeBalance]);
+        if ($bool) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //生成支付宝唯一订单号
+    public function alipayNo()
+    {
+        ini_set('date.timezone','PRC');
+        $data = date('YmdHis',time());
+        $outTradeNo = $data.rand(10000,99999);
+        return $outTradeNo;
     }
 }

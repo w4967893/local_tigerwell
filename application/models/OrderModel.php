@@ -43,4 +43,10 @@ class OrderModel extends CI_Model {
         $query = $this->db->get()->row_array();
         return $query;
     }
+
+    //更新订单表
+    public function update($data, $where)
+    {
+        return $this->db->update('user', $data, $where);
+    }
 }

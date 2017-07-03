@@ -30,7 +30,8 @@ class AlipayConfig
         $alipay_config['notify_url'] = "http://商户网址/create_forex_trade-PHP-UTF-8/notify_url.php";
 
         // 页面跳转同步通知页面路径 需http(s)://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-        $alipay_config['return_url'] = "http://www.alipay.com";
+//        $alipay_config['return_url'] = "http://www.alipay.com";
+        $alipay_config['return_url'] = "http://local.tigerwill.com/alipay/synchronous";
 
         //签名方式
         $alipay_config['sign_type']    = strtoupper('MD5');

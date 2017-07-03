@@ -62,6 +62,9 @@ $route['goods/list'] = 'Home/GoodsController/gList';//获取商品列表
 $route['order/buy'] = 'Home/OrderController/buy';//购买生成订单
 
 $route['alipay/index'] = 'Home/PayController/alipay';//支付宝
+$route['alipay/synchronous'] = 'Home/PayController/synchronous';//支付宝同步回调
+$route['alipay/synchronous'] = 'Home/PayController/synchronous';//支付宝异步回调
+
 
 //后端api
 $route['admin/login'] = 'admin/LoginController/index';//登录

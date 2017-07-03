@@ -63,7 +63,7 @@
                             <tr>
                                 <td><?php echo $item['create_time'];?></td>
                                 <td><?php echo $item['order_id'];?></td>
-                                <td><?php echo $item['pay_num'];?></td>
+                                <td><?php echo $item['trade_no'];?></td>
                                 <td><?php echo $item['total_price'];?></td>
                                 <td><?php echo $item['username'];?></td>
                                 <td><?php echo $item['goods_name'];?></td>
