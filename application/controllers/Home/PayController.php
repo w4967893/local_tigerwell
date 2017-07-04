@@ -25,7 +25,12 @@ class PayController extends HomeBase {
         $this->load->model('UserModel');
     }
 
-    //支付宝支付接口
+    /**
+     * 支付宝支付接口
+     *
+     * @param float total_fee 付款外币金额
+     * @param string body 商品描述
+     */
     public function alipay()
     {
         $total_fee = $this->input->get('total_fee');//付款外币金额，必填
@@ -64,7 +69,16 @@ class PayController extends HomeBase {
         echo $html_text;
     }
 
-    //同步回调
+    /**
+     * 同步回调
+     *
+     * @param string trade_status 交易状态
+     * @param string trade_no 支付宝交易号
+     * @param string out_trade_no 境外商户交易号
+     * @param string currency 结算币种
+     * @param float total_fee 商品的外币金额
+     * @retrun string
+     */
     public function synchronous()
     {
         $tradeStatus = $this->input->get('trade_status');//交易状态 TRADE_CLOSED/TRADE_FINISHED
@@ -95,8 +109,20 @@ class PayController extends HomeBase {
         }
     }
 
-    //异步通知可能比同步返回先到达
-    //异步回调 25小时以内完成8次通知（通知的间隔频率一般是：4m,10m,10m,1h,2h,6h,15h)
+    /**
+     * 异步回调 25小时以内完成8次通知（通知的间隔频率一般是：4m,10m,10m,1h,2h,6h,15h)
+     * 异步通知可能比同步返回先到达
+     *
+     * @param string notify_type 通知类型
+     * @param string notify_id 支付宝通知流水号，境外商户可以用这个流水号询问支付宝该条通知的合法性
+     * @param string notify_time 通知时间（支付宝时间）
+     * @param string trade_status 交易状态
+     * @param string trade_no 支付宝交易号
+     * @param string out_trade_no 境外商户交易号
+     * @param string currency 结算币种
+     * @param float total_fee 商品的外币金额
+     * @retrun string
+     */
     public function asynchronous()
     {
         $notifyType = $this->input->post('notify_type');//通知类型
@@ -136,7 +162,13 @@ class PayController extends HomeBase {
         }
     }
 
-    //改变余额
+    /**
+     * 改变余额
+     *
+     * string $outTradeNo 境外商户交易号
+     * string $totalFee 商品的外币金额
+     * @retrun bool
+     */
     public function changeBalance($outTradeNo, $totalFee)
     {
         //查询user_id
@@ -153,7 +185,11 @@ class PayController extends HomeBase {
         }
     }
 
-    //生成支付宝唯一订单号
+    /**
+     * 生成支付宝唯一订单号
+     *
+     * @retrun bool
+     */
     public function alipayNo()
     {
         ini_set('date.timezone','PRC');
@@ -162,7 +198,12 @@ class PayController extends HomeBase {
         return $outTradeNo;
     }
 
-    //异步通知验证
+    /**
+     * 异步通知验证
+     *
+     * string $notifyId 支付宝通知流水号
+     * @retrun bool
+     */
     public function validation($notifyId)
     {
         $this->load->library('alipay/AlipayConfig', '', 'alipayConfig');

@@ -24,7 +24,18 @@ class ApplyController extends CI_Controller {
         $this->load->model('ApplyModel');
     }
 
-    //申请试用
+
+    /**
+     * 申请试用
+     *
+     * @param string truename 真实姓名
+     * @param string email 邮件
+     * @param string phone 手机
+     * @param string company 公司
+     * @param string position 职位
+     * @param string desc 备注
+     * @return json
+     */
     public function apply()
     {
         $truename = $this->input->get('truename');

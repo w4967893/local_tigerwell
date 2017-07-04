@@ -24,7 +24,11 @@ class GoodsController extends CI_Controller {
         $this->load->model('GoodsModel');
     }
 
-    //商品列表
+    /**
+     * 商品列表
+     *
+     * @return json
+     */
     public function gList()
     {
         $goodsArr = $this->GoodsModel->gList(['status' => 1]);

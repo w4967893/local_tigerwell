@@ -25,7 +25,13 @@ class LoginController extends CI_Controller {
         $this->load->model('orderModel');
     }
 
-    //用户登录
+    /**
+     * 用户登录
+     *
+     * @param string username
+     * @param string password
+     * @return json
+     */
     public function login()
     {
         $username = $this->input->get('username');
@@ -48,7 +54,11 @@ class LoginController extends CI_Controller {
         echo $this->requestReturn('登录成功', true, $userArr);exit;
     }
 
-    //退出登录
+    /**
+     * 退出登录
+     *
+     * @return json
+     */
     public function logout()
     {
         $this->session->sess_destroy();

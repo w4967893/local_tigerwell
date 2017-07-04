@@ -23,7 +23,11 @@ class ChangeMoneyController extends HomeBase {
         $this->load->model('ChangeMoneyModel');
     }
 
-    //用户资金变动列表
+    /**
+     * 用户资金变动列表
+     *
+     * @return json
+     */
     public function userChange()
     {
         $userId = $this->session->userdata('id');

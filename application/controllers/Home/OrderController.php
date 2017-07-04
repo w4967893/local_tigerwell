@@ -25,7 +25,13 @@ class OrderController extends HomeBase {
         $this->load->model('UserModel');
     }
 
-    //生成订单
+    /**
+     * 生成订单
+     *
+     * @param int goods_id 商品id
+     * @param int month 维修月份数
+     * @return json
+     */
     public function buy()
     {
         $goodsId = $this->input->get('goods_id');
@@ -58,11 +64,15 @@ class OrderController extends HomeBase {
         if (!$bool) {
             echo $this->requestReturn('购买失败', false);exit;
         } else {
-            echo $this->requestReturn('购买成功', true, $goodsArr);exit;
+            echo $this->requestReturn('购买成功', true);exit;
         }
     }
 
-    //生成订单号码
+    /**
+     * 生成订单号码
+     *
+     * @return int
+     */
     protected function orderNum()
     {
         //年月日加随机数
