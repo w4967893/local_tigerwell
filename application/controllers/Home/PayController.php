@@ -76,18 +76,26 @@ class PayController extends HomeBase {
         $notifyTime = $this->input->get('notify_time');//返回充值时间（系统时间)
         $update = ['trade_status' => $tradeStatus, 'trade_no' => $tradeNo, 'currency' => $currency, 'total_fee' => $totalFee, 'notify_time' => $notifyTime];
         $where = ['out_trade_no' => $outTradeNo];
-        //更新充值表
-        $bool = $this->PayModel->update($update, $where);
-        if ($bool) {
-            $this->changeBalance($outTradeNo, $totalFee);
-        }
-        if ($tradeStatus == 'TRADE_FINISHED') {
-            echo '支付成功';
+
+        //验证是否该更新充值表   如果异步通知比同步通知更早则会出现这种状况
+        $payObj = $this->PayModel->getOne($where);
+        if (!$payObj['trade_no']) {
+            //更新充值表
+            $bool = $this->PayModel->update($update, $where);
+            if ($bool) {
+                $this->changeBalance($outTradeNo, $totalFee);
+            }
+            if ($tradeStatus == 'TRADE_FINISHED') {
+                echo '支付成功';
+            } else {
+                echo '支付失败';
+            }
         } else {
-            echo '支付失败';
+            echo '支付成功';exit;
         }
     }
 
+    //异步通知可能比同步返回先到达
     //异步回调 25小时以内完成8次通知（通知的间隔频率一般是：4m,10m,10m,1h,2h,6h,15h)
     public function asynchronous()
     {
@@ -103,15 +111,28 @@ class PayController extends HomeBase {
 
         $update = ['notify_type' => $notifyType, 'notify_id' => $notifyId, 'trade_status' => $tradeStatus, 'trade_no' => $tradeNo, 'currency' => $currency, 'total_fee' => $totalFee, 'notify_time' => $notifyTime];
         $where = ['out_trade_no' => $outTradeNo];
-        //更新充值表
-        $bool = $this->PayModel->update($update, $where);
-        if ($bool) {
-            $change = $this->changeBalance($outTradeNo, $totalFee);
-            if ($change) {
-                echo 'success';
+
+        //验证是否该更新充值表   如果同步通知之后异步通知继续回调
+        $payObj = $this->PayModel->getOne($where);
+        if (!$payObj['trade_no']) {
+            //异步通知验证是否有效
+            $vbool = $this->validation($notifyId);
+            if ($vbool) {
+                //更新充值表
+                $bool = $this->PayModel->update($update, $where);
+                if ($bool) {
+                    $change = $this->changeBalance($outTradeNo, $totalFee);
+                    if ($change) {
+                        echo 'success';
+                    } else {
+                        echo 'false';
+                    }
+                }
             } else {
                 echo 'false';
             }
+        } else {
+            echo 'success';
         }
     }
 
@@ -139,5 +160,30 @@ class PayController extends HomeBase {
         $data = date('YmdHis',time());
         $outTradeNo = $data.rand(10000,99999);
         return $outTradeNo;
+    }
+
+    //异步通知验证
+    public function validation($notifyId)
+    {
+        $this->load->library('alipay/AlipayConfig', '', 'alipayConfig');
+        $alipay_config = $this->alipayConfig->config();
+
+        $url = 'https://mapi.alipay.com/gateway.do?service=notify_verify&partner='.$alipay_config['partner'].'&notify_id='.$notifyId;
+        //初始化
+        $curl = curl_init();
+        //设置抓取的url
+        curl_setopt($curl, CURLOPT_URL, $url);
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        //执行命令
+        $data = curl_exec($curl);
+        //关闭URL请求
+        curl_close($curl);
+        //显示获得的数据
+        if ($data == 'true') {
+            return true;
+        } else {
+            false;
+        }
     }
 }
